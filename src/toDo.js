@@ -1,68 +1,59 @@
 import React from 'react';
 import ToDoUI from './toDoUI';
+import { Button, Badge } from 'react-bootstrap'
 
-class ToDo extends React.Component{
-    state={
-        items:[],
-        text:'',
-        count:0
+class ToDo extends React.Component {
+    state = {
+        items: [],
+        currentItem: {
+            text: '',
+            key: '',
+        },
     }
-    input = e =>{
+    input = e => {
+        const itemText = e.target.value
+        const currentItem = { text: itemText, key: Date.now() }
         this.setState({
-            text:(e.target.value)
+            currentItem,
         })
     }
-    add = e =>{
-        let {text,items,count}= this.state;
-        //e.preventDefault();
-        if (!text.length) {
-        return;
-        }
-        const newItem = {
-        text: text,
-        count: count+1
-        };
-        this.state.items.push(newItem);
-        this.setState({
-            items:items,
-            text:'',
-            count: count+1
-            
-        })     
-  }
-    delete = (key) =>{
-            //console.log(key);
-            let {count,items}=this.state;
-            //console.log(count);
-            const newItems=items.filter(()=>{
-                if(key==count){
-                    console.log("match")
-                }
-                else{
-                    console.log("notmatch")
-                }
+    add = e => {
+        e.preventDefault()
+        const newItem = this.state.currentItem
+        if (newItem.text !== '') {
+            const items = [...this.state.items, newItem]
+            this.setState({
+                items: items,
+                currentItem: { text: '', key: '' },
             })
-            
-
+        }
     }
-    
-    render(){
-        let {items}=this.state;
-        return(
+    delete = key => {
+        const filteredItems = this.state.items.filter(item => {
+            return item.key !== key
+        })
+        this.setState({
+            items: filteredItems,
+        })
+    }
+
+    render() {
+        let { items } = this.state;
+        return (
             <div>
-                <h3>what need To Complete???</h3>
-                {/* {this.state.items} */}
-                
-                    {items.map(item => (
-                        <div>
-                            <li key={item.count}>{item.count+"."}{item.text}</li>
-                            <input type="button" value="Completed" onClick={this.delete(item.count)}></input>
-                        </div>
-                    ))}
-                
-                <ToDoUI input={this.input} add={this.add} data={this.state}/>
+                {items.map((item, i) => (
+                    <div>
+                        <li key={i}>
+                            <h5>
+                                {item.text}<Badge variant="secondary" onClick={() => { this.delete(item.key) }}>Completed</Badge>
+                            </h5>
+                        </li>
+                    </div> 
+                ))}
+
+                <ToDoUI input={this.input} add={this.add} data={this.state} />
             </div>
         )
     }
 }
-export default ToDo;
+export default ToDo; 
