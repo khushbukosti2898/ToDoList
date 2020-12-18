@@ -1,13 +1,10 @@
 import React from 'react';
-import ToDo from './toDo';
-import './App.css';
+import ToDo from './component/ToDo';
 import './todo.scss';
 
 function App() {
   return (
-    <div className="todo">
-      <ToDo />
-    </div>
+    <ToDo />
   );
 }
 
